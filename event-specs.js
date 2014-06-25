@@ -59,15 +59,10 @@ var eventSpecs = {
 		process_name: "Vpapi ending game",
 		process_bound: "end"
 	},
-	"resizeStarted": {
+	"resizeCalled": {
 		domain: "rendering/canvas",
 		process_name: "Resizing canvas",
-		process_bound: "start"
-	},
-	"resizeFinished": {
-		domain: "rendering/canvas",
-		process_name: "Resizing canvas",
-		process_bound: "end"
+		process_bound: "none"
 	},
 };
 
