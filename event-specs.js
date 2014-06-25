@@ -59,6 +59,16 @@ var eventSpecs = {
 		process_name: "Vpapi ending game",
 		process_bound: "end"
 	},
+	"resizeStarted": {
+		domain: "rendering/canvas",
+		process_name: "Resizing canvas",
+		process_bound: "start"
+	},
+	"resizeFinished": {
+		domain: "rendering/canvas",
+		process_name: "Resizing canvas",
+		process_bound: "end"
+	},
 };
 
 module.exports = eventSpecs;
