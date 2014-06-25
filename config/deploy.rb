@@ -42,7 +42,7 @@ namespace :deploy do
       # Your restart mechanism here, for example:
       # execute :touch, release_path.join('tmp/restart.txt')
       execute "cd #{current_path} && npm install"
-      execute "forever stopall; true"
+      execute "forever stop server.js; true"
       execute "cd #{current_path} && forever start server.js"
     end
   end
