@@ -28,11 +28,14 @@ MongoClient.connect('mongodb://127.0.0.1:27017/vtrace', function(err, db) {
 	server.listen(3000);
 
 	app.post('/ClientLogEvent', function(req, res){
+
+		var data = JSON.parse(req.rawBody);
+		
 		console.log("Got a ClientLogEvent:");
 		console.log(data);
-		
+
 		res.header('Access-Control-Allow-Origin', "*");
-		var data = JSON.parse(req.rawBody);
+		
 		res.json({status: 'ok'});
 
 		var c = db.collection('client_log_events');
