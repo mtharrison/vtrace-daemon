@@ -24,7 +24,7 @@ function decorate(data) {
 
 		for(var i in spec)
 			data[i] = spec[i];
-		
+
 	}	
 
 	return data;
@@ -66,10 +66,10 @@ MongoClient.connect('mongodb://127.0.0.1:27017/vtrace', function(err, db) {
 		});
 
 		socket.on('ClientEvent', function(data){
+			var data = decorate(data);
+
 			console.log("Got a ClientEvent:");
 			console.log(data);
-
-			var data = decorate(data);
 
 			var c = db.collection('client_events');
 			c.insert(data, function(){ if(err) console.log(err); })
@@ -84,10 +84,10 @@ MongoClient.connect('mongodb://127.0.0.1:27017/vtrace', function(err, db) {
 		});
 
 		socket.on('ServerEvent', function(data){
+			var data = decorate(data);
+
 			console.log("Got a ServerEvent:");
 			console.log(data);
-
-			var data = decorate(data);
 
 			var c = db.collection('server_events');
 			c.insert(data, function(){ if(err) console.log(err); })
