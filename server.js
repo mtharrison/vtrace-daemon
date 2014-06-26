@@ -17,7 +17,7 @@ function rawBody(req, res, next) {
   });
 }
 
-function decorate(data) {
+function decorateEvent(data) {
 	if(eventSpecs.hasOwnProperty(data.event_name)){
 
 		var spec = eventSpecs[data.event_name];
@@ -27,6 +27,10 @@ function decorate(data) {
 
 	}	
 
+	return data;
+}
+
+function decorateProcess(data) {
 	return data;
 }
 
@@ -66,12 +70,22 @@ MongoClient.connect('mongodb://127.0.0.1:27017/vtrace', function(err, db) {
 		});
 
 		socket.on('ClientEvent', function(data){
-			var data = decorate(data);
+			var data = decorateEvent(data);
 
 			console.log("Got a ClientEvent:");
 			console.log(data);
 
 			var c = db.collection('client_events');
+			c.insert(data, function(){ if(err) console.log(err); })
+		});
+
+		socket.on('ClientProcess', function(data){
+			var data = decorateProcess(data);
+
+			console.log("Got a ClientProcess:");
+			console.log(data);
+
+			var c = db.collection('client_processes');
 			c.insert(data, function(){ if(err) console.log(err); })
 		});
 
@@ -84,12 +98,22 @@ MongoClient.connect('mongodb://127.0.0.1:27017/vtrace', function(err, db) {
 		});
 
 		socket.on('ServerEvent', function(data){
-			var data = decorate(data);
+			var data = decorateEvent(data);
 
 			console.log("Got a ServerEvent:");
 			console.log(data);
 
 			var c = db.collection('server_events');
+			c.insert(data, function(){ if(err) console.log(err); })
+		});
+
+		socket.on('ServerProcess', function(data){
+			var data = decorateProcess(data);
+
+			console.log("Got a ServerProcess:");
+			console.log(data);
+
+			var c = db.collection('server_processes');
 			c.insert(data, function(){ if(err) console.log(err); })
 		});
 	});
