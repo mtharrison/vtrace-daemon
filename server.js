@@ -4,7 +4,8 @@ var MongoClient = require('mongodb').MongoClient,
 	bodyParser  = require('body-parser')
 	server 		= require('http').Server(app),
 	format 		= require('util').format,
-	eventSpecs  = require('./event-specs');
+	eventSpecs  = require('./event-specs'),
+	DATA_LIFETIME_SECS = 604800;
 
 function rawBody(req, res, next) {
   req.setEncoding('utf8');
@@ -34,9 +35,21 @@ function decorateProcess(data) {
 	return data;
 }
 
+function setExpiries(db) {
+	// Set expiries on all data for 
+	db.collection('client_log_events').ensureIndex({ "createdAt": 1 }, { expireAfterSeconds: DATA_LIFETIME_SECS });
+	db.collection('client_events').ensureIndex({ "createdAt": 1 }, { expireAfterSeconds: DATA_LIFETIME_SECS });
+	db.collection('client_processes').ensureIndex({ "createdAt": 1 }, { expireAfterSeconds: DATA_LIFETIME_SECS });
+	db.collection('server_log_events').ensureIndex({ "createdAt": 1 }, { expireAfterSeconds: DATA_LIFETIME_SECS });
+	db.collection('server_events').ensureIndex({ "createdAt": 1 }, { expireAfterSeconds: DATA_LIFETIME_SECS });
+	db.collection('server_processes').ensureIndex({ "createdAt": 1 }, { expireAfterSeconds: DATA_LIFETIME_SECS });
+}
+
 app.use(rawBody);
 
 MongoClient.connect('mongodb://127.0.0.1:27017/vtrace', function(err, db) {
+
+	setExpiries(db);
 
 	console.log("Mongo connected!");
 
@@ -62,6 +75,9 @@ MongoClient.connect('mongodb://127.0.0.1:27017/vtrace', function(err, db) {
 	io.on('connection', function(socket){
 
 		socket.on('ClientLogEvent', function(data){
+
+			data.createdAt = new Date();
+
 			console.log("Got a ClientLogEvent:");
 			console.log(data);
 
@@ -71,6 +87,7 @@ MongoClient.connect('mongodb://127.0.0.1:27017/vtrace', function(err, db) {
 
 		socket.on('ClientEvent', function(data){
 			var data = decorateEvent(data);
+			data.createdAt = new Date();
 
 			console.log("Got a ClientEvent:");
 			console.log(data);
@@ -81,6 +98,7 @@ MongoClient.connect('mongodb://127.0.0.1:27017/vtrace', function(err, db) {
 
 		socket.on('ClientProcess', function(data){
 			var data = decorateProcess(data);
+			data.createdAt = new Date();
 
 			console.log("Got a ClientProcess:");
 			console.log(data);
@@ -90,6 +108,8 @@ MongoClient.connect('mongodb://127.0.0.1:27017/vtrace', function(err, db) {
 		});
 
 		socket.on('ServerLogEvent', function(data){
+			data.createdAt = new Date();
+
 			console.log("Got a ServerLogEvent:");
 			console.log(data);
 
@@ -99,6 +119,7 @@ MongoClient.connect('mongodb://127.0.0.1:27017/vtrace', function(err, db) {
 
 		socket.on('ServerEvent', function(data){
 			var data = decorateEvent(data);
+			data.createdAt = new Date();
 
 			console.log("Got a ServerEvent:");
 			console.log(data);
@@ -109,6 +130,7 @@ MongoClient.connect('mongodb://127.0.0.1:27017/vtrace', function(err, db) {
 
 		socket.on('ServerProcess', function(data){
 			var data = decorateProcess(data);
+			data.createdAt = new Date();
 
 			console.log("Got a ServerProcess:");
 			console.log(data);
