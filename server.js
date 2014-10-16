@@ -37,12 +37,12 @@ function decorateProcess(data) {
 
 function setExpiries(db) {
 	// Set expiries on all data for 
-	db.collection('client_log_events').ensureIndex({ "createdAt": 1 }, { expireAfterSeconds: DATA_LIFETIME_SECS });
-	db.collection('client_events').ensureIndex({ "createdAt": 1 }, { expireAfterSeconds: DATA_LIFETIME_SECS });
-	db.collection('client_processes').ensureIndex({ "createdAt": 1 }, { expireAfterSeconds: DATA_LIFETIME_SECS });
-	db.collection('server_log_events').ensureIndex({ "createdAt": 1 }, { expireAfterSeconds: DATA_LIFETIME_SECS });
-	db.collection('server_events').ensureIndex({ "createdAt": 1 }, { expireAfterSeconds: DATA_LIFETIME_SECS });
-	db.collection('server_processes').ensureIndex({ "createdAt": 1 }, { expireAfterSeconds: DATA_LIFETIME_SECS });
+	db.collection('client_log_events').ensureIndex({ "createdAt": 1 }, { expireAfterSeconds: DATA_LIFETIME_SECS } , function(){});
+	db.collection('client_events').ensureIndex({ "createdAt": 1 }, { expireAfterSeconds: DATA_LIFETIME_SECS } , function(){});
+	db.collection('client_processes').ensureIndex({ "createdAt": 1 }, { expireAfterSeconds: DATA_LIFETIME_SECS } , function(){});
+	db.collection('server_log_events').ensureIndex({ "createdAt": 1 }, { expireAfterSeconds: DATA_LIFETIME_SECS } , function(){});
+	db.collection('server_events').ensureIndex({ "createdAt": 1 }, { expireAfterSeconds: DATA_LIFETIME_SECS } , function(){});
+	db.collection('server_processes').ensureIndex({ "createdAt": 1 }, { expireAfterSeconds: DATA_LIFETIME_SECS } , function(){});
 }
 
 app.use(rawBody);

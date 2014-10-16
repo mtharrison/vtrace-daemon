@@ -1,5 +1,4 @@
 # config valid only for Capistrano 3.1
-lock '3.1.0'
 
 set :application, 'vtrace_backend'
 set :repo_url, 'git@github.com:mtharrison/vtrace-daemon.git'
