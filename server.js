@@ -18,6 +18,20 @@ function rawBody(req, res, next) {
   });
 }
 
+function getUsername(sessionid, cb) {
+	var baseURL = 'http://www.videopoker.com/api/session_info?sessionid=';
+	request(baseURL + sessionid, function(error, response, body){
+		if(error){
+			cb(null);
+			return false;	
+		}
+
+		var body = JSON.parse(body);
+
+		cb(body.nickname);
+	});
+}
+
 function decorateEvent(data) {
 	if(eventSpecs.hasOwnProperty(data.event_name)){
 
@@ -92,8 +106,12 @@ MongoClient.connect('mongodb://127.0.0.1:27017/vtrace', function(err, db) {
 			console.log("Got a ClientEvent:");
 			console.log(data);
 
-			var c = db.collection('client_events');
-			c.insert(data, function(){ if(err) console.log(err); })
+			getUsername(data.sessionid, function(username){
+				data.username = username;
+				var c = db.collection('client_events');
+				c.insert(data, function(){ if(err) console.log(err); })
+			});
+			
 		});
 
 		socket.on('ClientProcess', function(data){
