@@ -5,6 +5,7 @@ var MongoClient = require('mongodb').MongoClient,
 	server 		= require('http').Server(app),
 	format 		= require('util').format,
 	eventSpecs  = require('./event-specs'),
+	request		= require('request'),
 	DATA_LIFETIME_SECS = 604800;
 
 function rawBody(req, res, next) {
